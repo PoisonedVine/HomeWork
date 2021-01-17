@@ -5,9 +5,4 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Folder Include="Lesson1\" />
-    <Folder Include="Lesson2\" />
-  </ItemGroup>
-
 </Project>
