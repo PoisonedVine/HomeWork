@@ -1,14 +1,14 @@
 ﻿using System;
 
-namespace MyProject
+namespace HomeWork
 {
-    class Program
+    class HomeWork
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Say your name");
+            Console.WriteLine("Введите имя");
             string Name = Console.ReadLine();
-            Console.WriteLine($"Hello, {Name}. Today is {DateTime.UtcNow}");
+            Console.WriteLine($"Привет, {Name}, сегодня {DateTime.Today.ToString("dd.MM.yyyy")}");
         }
     }
 }
