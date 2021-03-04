@@ -7,25 +7,33 @@ namespace Task2_3_1
     class Program
     {
 
+        /*
+        |                                  Method |       Mean |      Error |     StdDev |
+        | --------------------------------------- | ----------:| ----------:| ----------:|
+        | TestFloatPointClassDistanceCalc         | 10.220 us  | 0.1224 us  | 0.1085 us  |
+        | TestFloatPointStructDistanceCalc        | 7.630 us   | 0.1436 us  | 0.1344 us  |
+        | TestDoublePointStructDistanceCalc       | 8.102 us   | 0.1616 us  | 0.1985 us  |
+        | TestFloatPointStructDistanceWOSqrtCalc  | 7.512 us   | 0.0726 us  | 0.0679 us  |
+        */
+
         static void Main(string[] args)
         {
             BenchmarkSwitcher.FromAssembly(typeof(Program).Assembly).Run(args);
-
         }
 
 
     }
     public class BechmarkClass 
     {
-        public FloatPointClass[,] FloatClassArray { get; set; }
-        public FloatPointStruct[,] FloatStructArray { get; set; }
-        public DoublePointStruct[,] DoubleStructArray { get; set; }
+        public FloatPointClass[] FloatClassArray { get; set; }
+        public FloatPointStruct[] FloatStructArray { get; set; }
+        public DoublePointStruct[] DoubleStructArray { get; set; }
         private const int _arraySize = 10000;
 
         public BechmarkClass() {
-            FloatClassArray = new FloatPointClass[_arraySize, 2];
-            FloatStructArray = new FloatPointStruct[_arraySize, 2];
-            DoubleStructArray = new DoublePointStruct[_arraySize,2];
+            FloatClassArray = new FloatPointClass[_arraySize];
+            FloatStructArray = new FloatPointStruct[_arraySize];
+            DoubleStructArray = new DoublePointStruct[_arraySize];
 
             CreateDoublePointStructArray();
             CreateFloatPointClassArray();
@@ -65,7 +73,8 @@ namespace Task2_3_1
         private void CreateFloatPointClassArray()
         {
             var rand = new Random();
-            for (int i = 0; i < FloatClassArray.GetLength(0); i++)
+            int i = 0;
+            while(i < FloatClassArray.Length)
             {
                 var FloatPointA = new FloatPointClass();
                 FloatPointA.X = NextFloat(rand);
@@ -75,14 +84,15 @@ namespace Task2_3_1
                 FloatPointB.X = NextFloat(rand);
                 FloatPointB.Y = NextFloat(rand);
 
-                this.FloatClassArray[i, 0] = FloatPointA;
-                this.FloatClassArray[i, 1] = FloatPointB;
+                FloatClassArray[i++] = FloatPointA;
+                FloatClassArray[i++] = FloatPointB;
             }
         }
         private void CreateFloatPointStructArray()
         {
             var rand = new Random();
-            for (int i = 0; i < FloatStructArray.GetLength(0); i++)
+            int i = 0;
+            while(i < FloatStructArray.Length)
             {
                 var FloatPointA = new FloatPointStruct();
                 FloatPointA.X = NextFloat(rand);
@@ -92,14 +102,15 @@ namespace Task2_3_1
                 FloatPointB.X = NextFloat(rand);
                 FloatPointB.Y = NextFloat(rand);
 
-                this.FloatStructArray[i, 0] = FloatPointA;
-                this.FloatStructArray[i, 1] = FloatPointB;
+                FloatStructArray[i++] = FloatPointA;
+                FloatStructArray[i++] = FloatPointB;
             }
         }
         private void CreateDoublePointStructArray()
         {
             var rand = new Random();
-            for (int i = 0; i < DoubleStructArray.GetLength(0); i++)
+            int i = 0;
+            while (i < DoubleStructArray.Length)
             {
                 var DoublePointA = new DoublePointStruct();
                 DoublePointA.X = rand.NextDouble() * 10000;
@@ -109,40 +120,44 @@ namespace Task2_3_1
                 DoublePointB.X = rand.NextDouble() * 10000;
                 DoublePointB.Y = rand.NextDouble() * 10000;
 
-                this.DoubleStructArray[i, 0] = DoublePointA;
-                this.DoubleStructArray[i, 1] = DoublePointB;
+                DoubleStructArray[i++] = DoublePointA;
+                DoubleStructArray[i++] = DoublePointB;
             }
         }
         [Benchmark]
         public void TestFloatPointClassDistanceCalc() 
         {
-            for (int i = 0; i < FloatClassArray.GetLength(0); i++) 
+            int i = 0;
+            while (i < FloatClassArray.Length)
             {
-                PointDistanceFloatClassCalc(FloatClassArray[i, 0], FloatClassArray[i, 1]);
+                PointDistanceFloatClassCalc(FloatClassArray[i++], FloatClassArray[i++]);
             }
         }
         [Benchmark]
         public void TestFloatPointStructDistanceCalc()
         {
-            for (int i = 0; i < FloatStructArray.GetLength(0); i++)
+            int i = 0;
+            while (i < FloatStructArray.Length)
             {
-                PointDistanceFloatStructCalc(FloatStructArray[i, 0], FloatStructArray[i, 1]);
+                PointDistanceFloatStructCalc(FloatStructArray[i++], FloatStructArray[i++]);
             }
         }
         [Benchmark]
         public void TestDoublePointStructDistanceCalc()
         {
-            for (int i = 0; i < DoubleStructArray.GetLength(0); i++)
+            int i = 0;
+            while (i < DoubleStructArray.Length)
             {
-                PointDistanceDoubleStructCalc(DoubleStructArray[i, 0], DoubleStructArray[i, 1]);
+                PointDistanceDoubleStructCalc(DoubleStructArray[i++], DoubleStructArray[i++]);
             }
         }
         [Benchmark]
         public void TestFloatPointStructDistanceWOSqrtCalc()
         {
-            for (int i = 0; i < FloatStructArray.GetLength(0); i++)
+            int i = 0;
+            while (i < FloatStructArray.Length)
             {
-                PointDistanceFloatStructWOSqrtCalc(FloatStructArray[i, 0], FloatStructArray[i, 1]);
+                PointDistanceFloatStructWOSqrtCalc(FloatStructArray[i++], FloatStructArray[i++]);
             }
         }
     }
