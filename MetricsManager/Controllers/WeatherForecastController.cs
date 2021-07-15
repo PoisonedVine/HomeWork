@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,33 +7,58 @@ using System.Threading.Tasks;
 
 namespace MetricsManager.Controllers
 {
+    [Route("api/WeatherForecast")]
     [ApiController]
-    [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
     {
-        private static readonly string[] Summaries = new[]
+        private readonly ValuesHolder holder;
+        public WeatherForecastController(ValuesHolder holder)
         {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
-
-        private readonly ILogger<WeatherForecastController> _logger;
-
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+            this.holder = holder;
+        }
+        [HttpPost("create")]
+        public IActionResult Create([FromQuery] DateTime date, [FromQuery] int temperatureC)
         {
-            _logger = logger;
+            var Values = holder.Values.Where(wf => wf.Date == date).ToArray();
+            if (Values.Length != 0)
+            {
+                return BadRequest("Data already exists!");
+            }
+
+            var curWF = new WeatherForecast() { Date = date.Date, TemperatureC = temperatureC };
+            holder.Values.Add(curWF);
+            return Ok();
+        }
+        [HttpPut("update")]
+        public IActionResult Update([FromQuery] DateTime date, [FromQuery] int temperatureC)
+        {
+            foreach (WeatherForecast wf in holder)
+            {
+                if (wf.Date == date)
+                {
+                    wf.TemperatureC = temperatureC;
+                    return Ok();
+                }                
+            }
+            return BadRequest("No data exists");
+        }
+        [HttpDelete("delete")]
+        public IActionResult Delete([FromQuery] DateTime date)
+        {
+            holder.Values = holder.Values.Where(wf => wf.Date != date).ToList();
+            return Ok();
         }
 
-        [HttpGet]
-        public IEnumerable<WeatherForecast> Get()
+        [HttpGet("read")]
+        public IActionResult Read()
         {
-            var rng = new Random();
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-            {
-                Date = DateTime.Now.AddDays(index),
-                TemperatureC = rng.Next(-20, 55),
-                Summary = Summaries[rng.Next(Summaries.Length)]
-            })
-            .ToArray();
+            return Ok(holder.Values);
+        }
+        [HttpGet("readPeriod")]
+        public IActionResult ReadPeriod(DateTime dateFrom, DateTime dateTo)
+        {
+            var curValues = holder.Values.Where(wf => wf.Date >= dateFrom && wf.Date <= dateTo).ToArray();
+            return Ok(curValues);
         }
     }
 }
