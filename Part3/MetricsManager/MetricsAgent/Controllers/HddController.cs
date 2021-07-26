@@ -11,7 +11,7 @@ namespace MetricsAgent.Controllers
     [ApiController]
     public class HddController : ControllerBase
     {
-        [HttpGet("left")]
+        [HttpGet("left/from/{fromTime}/to/{toTime}")]
         public IActionResult GetHDDLeft()
         {
             return Ok();

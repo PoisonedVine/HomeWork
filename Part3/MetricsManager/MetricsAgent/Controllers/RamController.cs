@@ -11,7 +11,7 @@ namespace MetricsAgent.Controllers
     [ApiController]
     public class RamController : ControllerBase
     {
-        [HttpGet("available")]
+        [HttpGet("available/from/{fromTime}/to/{toTime}")]
         public IActionResult GetAvailableSpace()
         {
             return Ok();
