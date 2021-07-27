@@ -2,14 +2,16 @@
 using Microsoft.AspNetCore.Mvc;
 using MetricsManager.Controllers;
 using Xunit;
+using Microsoft.Extensions.Logging;
+
 namespace MetricsManager.Tests
 {
     public class CpuMetricsControllerTests
     {
         private readonly CpuMetricsController cpuMetricsController;
-        public CpuMetricsControllerTests()
+        public CpuMetricsControllerTests(ILogger<CpuMetricsController> logger)
         {
-            cpuMetricsController = new CpuMetricsController();
+            cpuMetricsController = new CpuMetricsController(logger);
         }
         [Fact]
         public void GetMetricsFromAgent_ReturnsOk()
